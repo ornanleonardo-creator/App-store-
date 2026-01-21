@@ -1,0 +1,93 @@
+name: 🏗️ Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # Permet de lancer manuellement
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 1. Télécharger le code
+    - name: 📥 Checkout du code
+      uses: actions/checkout@v4
+      
+    # 2. Installer Node.js
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    # 3. Installer Java (nécessaire pour Android)
+    - name: ☕ Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    # 4. Créer package.json minimal
+    - name: 📄 Créer package.json
+      run: |
+        echo '{
+          "name": "mon-app-android",
+          "version": "1.0.0",
+          "description": "Application Android créée sans PC",
+          "main": "index.html",
+          "scripts": {
+            "build": "echo Build terminé"
+          },
+          "dependencies": {},
+          "devDependencies": {}
+        }' > package.json
+        
+    # 5. Installer Capacitor
+    - name: 📦 Installer Capacitor
+      run: |
+        npm install -g @capacitor/cli
+        npm install @capacitor/core @capacitor/android
+        
+    # 6. Initialiser le projet Capacitor
+    - name: 🚀 Initialiser Capacitor
+      run: |
+        npx cap init "Mon App Android" "com.monapp.android"
+        
+    # 7. Ajouter la plateforme Android
+    - name: 🤖 Ajouter Android
+      run: |
+        npx cap add android
+        
+    # 8. Synchroniser les fichiers
+    - name: 🔄 Synchroniser
+      run: |
+        npx cap sync
+        
+    # 9. Builder l'APK Debug
+    - name: 🛠️ Builder APK Debug
+      run: |
+        cd android
+        chmod +x gradlew
+        ./gradlew assembleDebug --no-daemon
+        
+    # 10. Téléverser l'APK
+    - name: 📤 Téléverser APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: mon-app-android
+        path: android/app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 7
+        
+    # 11. Message de succès
+    - name: ✅ Succès !
+      run: |
+        echo "========================================"
+        echo "🎉 FÉLICITATIONS !"
+        echo "📱 Ton APK Android a été créé avec succès !"
+        echo ""
+        echo "📥 Pour le télécharger :"
+        echo "1. Va dans l'onglet 'Actions'"
+        echo "2. Clique sur le dernier workflow"
+        echo "3. Descends dans 'Artifacts'"
+        echo "4. Télécharge 'mon-app-android'"
+        echo "========================================"
