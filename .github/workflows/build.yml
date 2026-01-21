@@ -1,62 +1,139 @@
-name: Build Android APK
+name: 🏗️ Build Android APK
 
 on:
-  workflow_dispatch:  # Permet de lancer manuellement
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📥 Checkout code
+    # 1. Télécharger le code
+    - name: 📥 Checkout
       uses: actions/checkout@v4
       
-    - name: 🟢 Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        
-    - name: ☕ Setup Java
+    # 2. Installer Java (ESSENTIEL pour Android)
+    - name: ☕ Install Java
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
         
-    - name: 📄 Create package.json
+    # 3. Installer Node.js
+    - name: 🟢 Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    # 4. Créer la structure de fichiers
+    - name: 📁 Create project structure
       run: |
+        # Créer package.json
         echo '{
-          "name": "mon-app",
-          "version": "1.0.0"
+          "name": "mon-app-android",
+          "version": "1.0.0",
+          "description": "Mon application Android"
         }' > package.json
         
+        # Créer index.html dans www/
+        mkdir -p www
+        echo '<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Mon App Android</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    padding: 50px;
+                    background: #4CAF50;
+                    color: white;
+                }
+                .app {
+                    background: white;
+                    color: black;
+                    padding: 30px;
+                    border-radius: 15px;
+                    margin: 20px auto;
+                    max-width: 400px;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                }
+                button {
+                    background: #2196F3;
+                    color: white;
+                    border: none;
+                    padding: 15px 30px;
+                    border-radius: 25px;
+                    font-size: 16px;
+                    margin: 10px;
+                    cursor: pointer;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>📱 Mon App Android</h1>
+            <div class="app">
+                <h2>Félicitations ! 🎉</h2>
+                <p>Tu as réussi à créer une APK Android sans PC !</p>
+                <button onclick="alert(\'Bravo ! 👏\')">Clique ici</button>
+                <button onclick="alert(\'Version 1.0.0\')">Version</button>
+            </div>
+            <p>Créé avec GitHub Actions</p>
+        </body>
+        </html>' > www/index.html
+        
+    # 5. Installer Capacitor
     - name: 📦 Install Capacitor
       run: |
         npm install -g @capacitor/cli
         npm install @capacitor/core @capacitor/android
         
-    - name: 🚀 Init Capacitor
+    # 6. Initialiser Capacitor (COMMANDE SIMPLIFIÉE)
+    - name: 🚀 Initialize Capacitor
       run: |
-        npx cap init "Mon App" "com.monapp.android" --web-dir .
+        npx cap init "Mon App" "com.monapp.android" --web-dir www
+        echo "✅ Capacitor initialisé"
         
-    - name: 🤖 Add Android
+    # 7. Ajouter Android
+    - name: 🤖 Add Android Platform
       run: |
         npx cap add android
+        echo "✅ Android ajouté"
         
-    - name: 🔄 Sync
+    # 8. Synchroniser
+    - name: 🔄 Sync Project
       run: |
         npx cap sync
+        echo "✅ Projet synchronisé"
         
+    # 9. Builder l'APK
     - name: 🏗️ Build APK
       run: |
         cd android
         chmod +x gradlew
         ./gradlew assembleDebug
         
+    # 10. Uploader l'APK
     - name: 📤 Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: app-android
-        path: android/app/build/outputs/apk/debug/app-debug.apk
+        name: app-android-apk
+        path: android/app/build/outputs/apk/debug/*.apk
         
-    - name: ✅ Done
-      run: echo "🎉 APK prêt! Télécharge dans Artifacts"
+    # 11. Message final
+    - name: 🎉 Success Message
+      run: |
+        echo ""
+        echo "████████████████████████████████████████"
+        echo "█                                      █"
+        echo "█   ✅ APK ANDROID CRÉÉ AVEC SUCCÈS!  █"
+        echo "█                                      █"
+        echo "████████████████████████████████████████"
+        echo ""
+        echo "📥 Pour télécharger ton APK :"
+        echo "1. Clique sur 'Artifacts' en bas"
+        echo "2. Télécharge 'app-android-apk'"
+        echo "3. Installe sur ton téléphone Android"
+        echo ""
