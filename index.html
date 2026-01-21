@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mon App Android</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .app-container {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 40px 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            width: 100%;
+            margin: 20px;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #2575fc;
+        }
+        h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #6a11cb;
+        }
+        p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        .features {
+            text-align: left;
+            margin: 25px 0;
+            padding-left: 20px;
+        }
+        .features li {
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+        button {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 90%;
+            max-width: 300px;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .counter {
+            font-size: 48px;
+            font-weight: bold;
+            color: #6a11cb;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #888;
+        }
+        .badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>📱 Mon App Android</h1>
+        <h2>Créée sans PC !</h2>
+        
+        <p>Cette application a été entièrement créée depuis un téléphone mobile, sans PC ni Android Studio.</p>
+        
+        <div class="counter" id="counter">0</div>
+        
+        <button onclick="incrementCounter()">
+            👍 Incrémenter le compteur
+        </button>
+        
+        <button onclick="showMessage()">
+            ℹ️ Voir les infos
+        </button>
+        
+        <button onclick="changeTheme()">
+            🎨 Changer le thème
+        </button>
+        
+        <div class="features">
+            <h3>✨ Fonctionnalités :</h3>
+            <li>✅ Interface moderne et responsive</li>
+            <li>✅ Compatible avec tous les téléphones</li>
+            <li>✅ Créée avec GitHub Actions</li>
+            <li>✅ 100% gratuite</li>
+            <li>✅ Mises à jour automatiques</li>
+        </div>
+        
+        <div style="margin: 25px 0;">
+            <span class="badge">Sans PC</span>
+            <span class="badge">Sans Android Studio</span>
+            <span class="badge">GitHub Actions</span>
+        </div>
+        
+        <div class="footer">
+            <p>Version 1.0.0 | Build #<span id="build">1</span></p>
+            <p>Dernière mise à jour : <span id="date">Aujourd'hui</span></p>
+        </div>
+    </div>
+
+    <script>
+        let counter = 0;
+        let buildNumber = 1;
+        
+        function incrementCounter() {
+            counter++;
+            document.getElementById('counter').textContent = counter;
+            
+            if (counter % 10 === 0) {
+                alert(`🎉 Bravo ! Tu as atteint ${counter} !`);
+            }
+        }
+        
+        function showMessage() {
+            alert("🚀 Félicitations !\n\nTu as réussi à créer une application Android complète sans utiliser de PC, uniquement avec GitHub Actions depuis ton téléphone !\n\n👉 Télécharge l'APK dans l'onglet 'Artifacts' après le build.");
+        }
+        
+        function changeTheme() {
+            const themes = [
+                ['#6a11cb', '#2575fc'],
+                ['#FF416C', '#FF4B2B'],
+                ['#3CA55C', '#B5AC49'],
+                ['#36D1DC', '#5B86E5'],
+                ['#834d9b', '#d04ed6']
+            ];
+            
+            const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+            document.body.style.background = `linear-gradient(135deg, ${randomTheme[0]} 0%, ${randomTheme[1]} 100%)`;
+        }
+        
+        // Animation initiale
+        setTimeout(() => {
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i <= 42) {
+                    document.getElementById('counter').textContent = i;
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 20);
+        }, 500);
+        
+        // Date actuelle
+        const now = new Date();
+        document.getElementById('date').textContent = now.toLocaleDateString('fr-FR');
+        
+        // Numéro de build aléatoire
+        buildNumber = Math.floor(Math.random() * 100) + 1;
+        document.getElementById('build').textContent = buildNumber;
+        
+        console.log("✅ Application Android chargée avec succès !");
+    </script>
+</body>
+  </html>
